@@ -3,13 +3,15 @@ using namespace System.Net
 Function Invoke-ListRoomLists {
     <#
     .FUNCTIONALITY
-    Entrypoint
+        Entrypoint
+    .ROLE
+        Exchange.Room.Read
     #>
     [CmdletBinding()]
     param($Request, $TriggerMetadata)
 
-    $APIName = $TriggerMetadata.FunctionName
-    Write-LogMessage -user $request.headers.'x-ms-client-principal' -API $APINAME -message 'Accessed this API' -Sev 'Debug'
+    $APIName = $Request.Params.CIPPEndpoint
+    Write-LogMessage -headers $Request.Headers -API $APINAME -message 'Accessed this API' -Sev 'Debug'
 
 
     # Write to the Azure Functions log stream.
@@ -20,9 +22,9 @@ Function Invoke-ListRoomLists {
 
     try {
         $params = @{
-            uri = 'https://graph.microsoft.com/beta/places/microsoft.graph.roomlist'
+            uri      = 'https://graph.microsoft.com/beta/places/microsoft.graph.roomlist'
             tenantid = $TenantFilter
-            AsApp = $true
+            AsApp    = $true
         }
         $GraphRequest = New-GraphGetRequest @params
 
